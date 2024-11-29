@@ -37,6 +37,19 @@ namespace ToDoListAPI
             });
             builder.Services.AddScoped<TaskRepo>();
             builder.Services.AddDbContext<TaskDBContext>(op=>op.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("TasKConnection")));
+            // enable Cross-Origin Requests CORS
+            var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(MyAllowSpecificOrigins,
+                builder =>
+                {
+                    builder.AllowAnyOrigin();
+                    builder.AllowAnyMethod();
+                    builder.AllowAnyHeader();
+                });
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -50,7 +63,7 @@ namespace ToDoListAPI
 
             app.UseAuthorization();
 
-
+            app.UseCors(MyAllowSpecificOrigins);
             app.MapControllers();
 
             app.Run();

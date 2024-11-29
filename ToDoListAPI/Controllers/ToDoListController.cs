@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using ToDoListAPI.DTOs;
@@ -9,6 +10,7 @@ namespace ToDoListAPI.Controllers
 {
     [Route("api/tasks")]
     [ApiController]
+    [EnableCors]
     public class ToDoListController : ControllerBase
     {
 
@@ -20,7 +22,7 @@ namespace ToDoListAPI.Controllers
 
         #region TaskManagment
         [HttpGet]
-        [SwaggerOperation(Summary = "Get all tasks", Description = "Fetches a list of all tasks.")]
+        [SwaggerOperation(Summary = "Get all tasks", Description = "Fetches a list of all tasks. Status = false => incomplete and Status = true => complete. Priority levels are {0 => LOW, 1 => MED , 2 => HIGH}.")]
         [SwaggerResponse(StatusCodes.Status200OK, "Tasks retrieved successfully.", typeof(List<SelectTaskDTO>))]
         [SwaggerResponse(StatusCodes.Status404NotFound, "No tasks found.")]
         [Produces("application/json")]
@@ -54,7 +56,7 @@ namespace ToDoListAPI.Controllers
             }
         }
         [HttpGet("{id}")]
-        [SwaggerOperation(Summary = "Get a task by ID", Description = "Fetches a specific task by its ID.")]
+        [SwaggerOperation(Summary = "Get a task by ID", Description = "Fetches a specific task by its ID. Status = false => incomplete and Status = true => complete. Priority levels are {0 => LOW, 1 => MED , 2 => HIGH}.")]
         [SwaggerResponse(StatusCodes.Status200OK, "Task retrieved successfully.", typeof(SelectTaskDTO))]
         [SwaggerResponse(StatusCodes.Status404NotFound, "Task not found.")]
         [Produces("application/json")]
@@ -84,7 +86,7 @@ namespace ToDoListAPI.Controllers
         }
 
         [HttpPost]
-        [SwaggerOperation(Summary = "Create a new task", Description = "Creates a new task with the provided details.")]
+        [SwaggerOperation(Summary = "Create a new task", Description = "Creates a new task with the provided details. Status = false => incomplete and Status = true => complete. Priority levels are {0 => LOW, 1 => MED , 2 => HIGH}. dueDate must be in this format { yyyy-mm-dd}")]
         [SwaggerResponse(StatusCodes.Status200OK, "Task created successfully.")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid task data.")]
         [Produces("application/json")]
@@ -112,7 +114,7 @@ namespace ToDoListAPI.Controllers
 
         }
         [HttpPut]
-        [SwaggerOperation(Summary = "Edit an existing task", Description = "Updates an existing task with new details.")]
+        [SwaggerOperation(Summary = "Edit an existing task", Description = "Updates an existing task with new details.Status = false => incomplete and Status = true => complete. Priority levels are {0 => LOW, 1 => MED , 2 => HIGH}. dueDate must be in this format { yyyy-mm-dd}")]
         [SwaggerResponse(StatusCodes.Status200OK, "Task updated successfully.")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid task data.")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "Task not found.")]
