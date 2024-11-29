@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using ToDoListAPI.MapperConfig;
 using ToDoListAPI.Models;
 using ToDoListAPI.Repo;
 
@@ -49,6 +50,10 @@ namespace ToDoListAPI
                     builder.AllowAnyHeader();
                 });
             });
+
+
+            // inject AutoMapper Dependancy
+            builder.Services.AddAutoMapper(typeof(ToDoListMapperConfig));
 
             var app = builder.Build();
 

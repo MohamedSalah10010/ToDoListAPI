@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -15,9 +16,11 @@ namespace ToDoListAPI.Controllers
     {
 
         TaskRepo repo;
-        public ToDoListController(TaskRepo repo)
+        IMapper mapper;
+        public ToDoListController(TaskRepo repo, IMapper mapper)
         {
             this.repo = repo;
+            this.mapper = mapper;
         }
 
         #region TaskManagment
@@ -33,24 +36,25 @@ namespace ToDoListAPI.Controllers
             if (!tasks.Any()) { return NotFound(); }
             else
             {
-                List<SelectTaskDTO> selectTaskDTOs = new List<SelectTaskDTO>();
-                foreach (var task in tasks)
-                {
+               var selectTaskDTOs = mapper.Map<List<SelectTaskDTO>>(tasks);
+                //foreach (var task in tasks)
+                //{
 
-                    SelectTaskDTO selectTaskDTO = new SelectTaskDTO()
-                    {
-                        Id = task.Id,
-                        Title = task.Title,
-                        Description = task.Description,
-                        status = task.status,
-                        creationDate = task.creationDate,
-                        dueDate = task.dueDate,
-                        priority = task.priority
+                //    SelectTaskDTO selectTaskDTO = new SelectTaskDTO()
+                //    {
+                //        Id = task.Id,
+                //        Title = task.Title,
+                //        Description = task.Description,
+                //        status = task.status,
+                //        creationDate = task.creationDate,
+                //        dueDate = task.dueDate,
+                //        priority = task.priority
 
-                    };
-                    selectTaskDTOs.Add(selectTaskDTO);
+                //    };
+                //    selectTaskDTOs.Add(selectTaskDTO);
 
-                }
+                //}
+
                 return Ok(selectTaskDTOs);
 
             }
@@ -68,17 +72,17 @@ namespace ToDoListAPI.Controllers
             else
             {
 
-                SelectTaskDTO selectTaskDTO = new SelectTaskDTO()
-                {
-                    Id = task.Id,
-                    Title = task.Title,
-                    Description = task.Description,
-                    status = task.status,
-                    creationDate = task.creationDate,
-                    dueDate = task.dueDate,
-                    priority = task.priority
+                var selectTaskDTO =mapper.Map<SelectTaskDTO>(task);
+                //{
+                //    Id = task.Id,
+                //    Title = task.Title,
+                //    Description = task.Description,
+                //    status = task.status,
+                //    creationDate = task.creationDate,
+                //    dueDate = task.dueDate,
+                //    priority = task.priority
 
-                };
+                //};
 
                 return Ok(selectTaskDTO);
 
@@ -95,16 +99,16 @@ namespace ToDoListAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                TaskManagment task = new TaskManagment()
-                {
-                    Title = taskDTO.Title,
-                    Description = taskDTO.Description,
-                    status = false,
-                    creationDate = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
-                    dueDate = taskDTO.dueDate,
-                    priority = taskDTO.priority
+                var task = mapper.Map<TaskManagment>(taskDTO);
+                //{
+                //    Title = taskDTO.Title,
+                //    Description = taskDTO.Description,
+                //    status = false,
+                //    creationDate = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
+                //    dueDate = taskDTO.dueDate,
+                //    priority = taskDTO.priority
 
-                };
+                //};
 
                 repo.addTask(task);
                 repo.save();
@@ -128,11 +132,13 @@ namespace ToDoListAPI.Controllers
                 if (task == null) { return NotFound(); }
                 else
                 {
-                    task.Title = taskDTO.Title;
-                    task.Description = taskDTO.Description;
-                    task.status = taskDTO.status;
-                    task.dueDate = taskDTO.dueDate;
-                    task.priority = taskDTO.priority;
+                    //    task.Title = taskDTO.Title;
+                    //    task.Description = taskDTO.Description;
+                    //    task.status = taskDTO.status;
+                    //    task.dueDate = taskDTO.dueDate;
+                    //    task.priority = taskDTO.priority;
+                    //    task.creationDate = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+                    mapper.Map(taskDTO, task);
                     task.creationDate = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 
                     repo.updateTask(task);
