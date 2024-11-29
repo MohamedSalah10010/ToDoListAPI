@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using ToDoListAPI.DTOs;
 using ToDoListAPI.Models;
 using ToDoListAPI.Repo;
@@ -19,6 +20,9 @@ namespace ToDoListAPI.Controllers
 
         #region taskStatus
         [HttpPut("{id}/complete")]
+        [SwaggerOperation(Summary = "Mark a task as complete", Description = "Updates the task status to complete.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Task marked as complete.", typeof(SelectTaskDTO))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Task not found.")]
         public IActionResult MarkTaskComplete(int id)
         {
             var task = repo.selectTaskById(id);
@@ -44,6 +48,9 @@ namespace ToDoListAPI.Controllers
         }
 
         [HttpPut("{id}/incomplete")]
+        [SwaggerOperation(Summary = "Mark a task as incomplete", Description = "Updates the task status to incomplete.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Task marked as incomplete.", typeof(SelectTaskDTO))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Task not found.")]
         public IActionResult MarkTaskIncomplete(int id)
         {
             var task = repo.selectTaskById(id);
@@ -71,8 +78,11 @@ namespace ToDoListAPI.Controllers
         #endregion
 
         #region FilteringTasks
-        
+
         [HttpGet("status")]
+        [SwaggerOperation(Summary = "Get tasks by status", Description = "Fetches tasks based on their completion status.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Tasks retrieved successfully.", typeof(List<SelectTaskDTO>))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "No tasks found with the specified status.")]
         public IActionResult getTasksByStatus([FromQuery] bool status)
         {
             var tasks = repo.selectAllTasks().Where(t => t.status == status);
@@ -103,6 +113,9 @@ namespace ToDoListAPI.Controllers
 
         }
         [HttpGet("date")]
+        [SwaggerOperation(Summary = "Get tasks by due date", Description = "Fetches tasks based on their due date.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Tasks retrieved successfully.", typeof(List<SelectTaskDTO>))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "No tasks found with the specified due date.")]
         public IActionResult getTasksByDueDate([FromQuery] DateOnly dueDate)
         {
             var tasks = repo.selectAllTasks().Where(t => t.dueDate == dueDate);
@@ -137,6 +150,10 @@ namespace ToDoListAPI.Controllers
 
         #region Task Priorities
         [HttpGet("priority")]
+        [SwaggerOperation(Summary = "Get tasks by priority", Description = "Fetches tasks based on their priority level.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Tasks retrieved successfully.", typeof(List<SelectTaskDTO>))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "No tasks found with the specified priority.")]
+
         public IActionResult getTasksByPriority([FromQuery] Priority priority)
         {
             var tasks = repo.selectAllTasks().Where(t => t.priority == priority);
@@ -168,7 +185,12 @@ namespace ToDoListAPI.Controllers
         }
 
 
+
         [HttpPut("{id}/priority")]
+        [SwaggerOperation(Summary = "Set task priority", Description = "Updates the priority level of a task.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Task priority updated successfully.", typeof(SelectTaskDTO))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Task not found.")]
+
         public IActionResult SetTaskPriority(int id, [FromQuery] Priority priority)
         {
             var task = repo.selectTaskById(id);

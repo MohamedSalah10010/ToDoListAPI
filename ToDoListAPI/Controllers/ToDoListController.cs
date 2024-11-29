@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using ToDoListAPI.DTOs;
 using ToDoListAPI.Models;
 using ToDoListAPI.Repo;
@@ -19,6 +20,11 @@ namespace ToDoListAPI.Controllers
 
         #region TaskManagment
         [HttpGet]
+        [SwaggerOperation(Summary = "Get all tasks", Description = "Fetches a list of all tasks.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Tasks retrieved successfully.", typeof(List<SelectTaskDTO>))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "No tasks found.")]
+        [Produces("application/json")]
+
         public IActionResult getAllTasks()
         {
             var tasks = repo.selectAllTasks();
@@ -48,6 +54,11 @@ namespace ToDoListAPI.Controllers
             }
         }
         [HttpGet("{id}")]
+        [SwaggerOperation(Summary = "Get a task by ID", Description = "Fetches a specific task by its ID.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Task retrieved successfully.", typeof(SelectTaskDTO))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Task not found.")]
+        [Produces("application/json")]
+
         public IActionResult getTaskById(int id)
         {
             var task = repo.selectTaskById(id);
@@ -73,6 +84,11 @@ namespace ToDoListAPI.Controllers
         }
 
         [HttpPost]
+        [SwaggerOperation(Summary = "Create a new task", Description = "Creates a new task with the provided details.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Task created successfully.")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid task data.")]
+        [Produces("application/json")]
+        [Consumes("application/json")]
         public IActionResult createTask(AddTaskDTO taskDTO)
         {
             if (ModelState.IsValid)
@@ -96,6 +112,12 @@ namespace ToDoListAPI.Controllers
 
         }
         [HttpPut]
+        [SwaggerOperation(Summary = "Edit an existing task", Description = "Updates an existing task with new details.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Task updated successfully.")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid task data.")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Task not found.")]
+        [Produces("application/json")]
+        [Consumes("application/json")]
         public IActionResult editTask(EditTaskDTO taskDTO)
         {
             if (ModelState.IsValid)
@@ -123,6 +145,11 @@ namespace ToDoListAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [SwaggerOperation(Summary = "Delete a task", Description = "Deletes a task by its ID.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Task deleted successfully.")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Task not found.")]
+        [Produces("application/json")]
+
         public IActionResult deleteTask(int id) {
 
             var task = repo.selectTaskById(id);
