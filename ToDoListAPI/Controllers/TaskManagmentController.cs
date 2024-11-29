@@ -23,6 +23,7 @@ namespace ToDoListAPI.Controllers
         [SwaggerOperation(Summary = "Mark a task as complete", Description = "Updates the task status to complete.")]
         [SwaggerResponse(StatusCodes.Status200OK, "Task marked as complete.", typeof(SelectTaskDTO))]
         [SwaggerResponse(StatusCodes.Status404NotFound, "Task not found.")]
+        [Produces("application/json")]
         public IActionResult MarkTaskComplete(int id)
         {
             var task = repo.selectTaskById(id);
@@ -51,6 +52,7 @@ namespace ToDoListAPI.Controllers
         [SwaggerOperation(Summary = "Mark a task as incomplete", Description = "Updates the task status to incomplete.")]
         [SwaggerResponse(StatusCodes.Status200OK, "Task marked as incomplete.", typeof(SelectTaskDTO))]
         [SwaggerResponse(StatusCodes.Status404NotFound, "Task not found.")]
+        [Produces("application/json")]
         public IActionResult MarkTaskIncomplete(int id)
         {
             var task = repo.selectTaskById(id);
@@ -80,9 +82,10 @@ namespace ToDoListAPI.Controllers
         #region FilteringTasks
 
         [HttpGet("status")]
-        [SwaggerOperation(Summary = "Get tasks by status", Description = "Fetches tasks based on their completion status.")]
+        [SwaggerOperation(Summary = "Get tasks by status", Description = "Fetches tasks based on their completion status.\n Status = false => incomplete and Status = true => complete")]
         [SwaggerResponse(StatusCodes.Status200OK, "Tasks retrieved successfully.", typeof(List<SelectTaskDTO>))]
         [SwaggerResponse(StatusCodes.Status404NotFound, "No tasks found with the specified status.")]
+        [Produces("application/json")]
         public IActionResult getTasksByStatus([FromQuery] bool status)
         {
             var tasks = repo.selectAllTasks().Where(t => t.status == status);
@@ -113,9 +116,10 @@ namespace ToDoListAPI.Controllers
 
         }
         [HttpGet("date")]
-        [SwaggerOperation(Summary = "Get tasks by due date", Description = "Fetches tasks based on their due date.")]
+        [SwaggerOperation(Summary = "Get tasks by due date", Description = "Fetches tasks based on their due date.\n Must be{yyyy-mm-dd} ")]
         [SwaggerResponse(StatusCodes.Status200OK, "Tasks retrieved successfully.", typeof(List<SelectTaskDTO>))]
         [SwaggerResponse(StatusCodes.Status404NotFound, "No tasks found with the specified due date.")]
+        [Produces("application/json")]
         public IActionResult getTasksByDueDate([FromQuery] DateOnly dueDate)
         {
             var tasks = repo.selectAllTasks().Where(t => t.dueDate == dueDate);
@@ -150,10 +154,10 @@ namespace ToDoListAPI.Controllers
 
         #region Task Priorities
         [HttpGet("priority")]
-        [SwaggerOperation(Summary = "Get tasks by priority", Description = "Fetches tasks based on their priority level.")]
+        [SwaggerOperation(Summary = "Get tasks by priority", Description = "Fetches tasks based on their priority level. Priority levels are {0 => LOW, 1 => MED , 2 => HIGH}. ")]
         [SwaggerResponse(StatusCodes.Status200OK, "Tasks retrieved successfully.", typeof(List<SelectTaskDTO>))]
         [SwaggerResponse(StatusCodes.Status404NotFound, "No tasks found with the specified priority.")]
-
+        [Produces("application/json")]
         public IActionResult getTasksByPriority([FromQuery] Priority priority)
         {
             var tasks = repo.selectAllTasks().Where(t => t.priority == priority);
@@ -187,10 +191,11 @@ namespace ToDoListAPI.Controllers
 
 
         [HttpPut("{id}/priority")]
-        [SwaggerOperation(Summary = "Set task priority", Description = "Updates the priority level of a task.")]
+        [SwaggerOperation(Summary = "Set task priority", Description = "Updates the priority level of a task. Priority levels are {0 => LOW, 1 => MED , 2 => HIGH}.")]
         [SwaggerResponse(StatusCodes.Status200OK, "Task priority updated successfully.", typeof(SelectTaskDTO))]
         [SwaggerResponse(StatusCodes.Status404NotFound, "Task not found.")]
-
+        [Produces("application/json")]
+        [Consumes("application/json")]
         public IActionResult SetTaskPriority(int id, [FromQuery] Priority priority)
         {
             var task = repo.selectTaskById(id);
